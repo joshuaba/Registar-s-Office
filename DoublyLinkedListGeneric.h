@@ -45,8 +45,8 @@ DoublyLinkedListGeneric<T>::DoublyLinkedListGeneric()
 template <class T>
 DoublyLinkedListGeneric<T>::DoublyLinkedListGeneric(int maxSize)
 {
-	front == NULL;
-	back == NULL;
+	front = NULL;
+	back = NULL;
 	size = maxSize;
 }
 
@@ -131,9 +131,10 @@ void DoublyLinkedListGeneric<T>::insertBack(T d)
 
 	else
 	{
-		node->next = NULL;
 		node->prev = back;
+		back->next = node;
 		back = node;
+		cout << "Got here Doubly Linked List insert" << endl;
 	}
 	size++;
 }

@@ -11,7 +11,7 @@ class DoubleListNodeGeneric
 {
 	public:
 		DoubleListNodeGeneric();
-		DoubleListNodeGeneric(T& d); //overloaded constructor
+		DoubleListNodeGeneric(T d); //overloaded constructor
 		~DoubleListNodeGeneric();
 
 		T data;
@@ -30,7 +30,7 @@ DoubleListNodeGeneric<T>::DoubleListNodeGeneric()
 }
 
 template <class T>
-DoubleListNodeGeneric<T>::DoubleListNodeGeneric(T& d)
+DoubleListNodeGeneric<T>::DoubleListNodeGeneric(T d)
 {
 	data = d;
 	next = NULL; //null ptr

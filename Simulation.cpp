@@ -37,7 +37,10 @@ void Simulation::processFile(string fileToProcess)
     {
         fileLineNum++; //I want to start off the line number of the file as 1
         getline(inputStream, valueRead);
+
         int numberRead = stoi(valueRead); //convert the integer (read in as a string) to an int object
+        cout << "Number read: " << numberRead << endl;
+
         cout << numberRead << endl;
 
         if(fileLineNum == 1)
@@ -58,7 +61,8 @@ void Simulation::processFile(string fileToProcess)
         else //the value is a student time required at window value
         {
             cout << "Got here A!" << endl;
-            addStudent(Students(numberRead, currentTimeTick)); //add a student to the studentsQueue queue, initializing the student object as requiring numberRead minutes at the window and entering the queue at
+            Students myStudent(numberRead, currentTimeTick);
+            addStudent(myStudent); //add a student to the studentsQueue queue, initializing the student object as requiring numberRead minutes at the window and entering the queue at
             cout << "Got here B!" << endl;
         }
     }

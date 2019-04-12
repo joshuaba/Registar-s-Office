@@ -34,7 +34,7 @@ public:
 template <class T>
 QueueGeneric<T>::QueueGeneric()
 {
-	LL = new DoublyLinkedListGeneric<T>[0];
+	LL = new DoublyLinkedListGeneric<T>();
 	head = 0;
 	tail = 0;
 	numElements = 0;
@@ -67,8 +67,10 @@ void QueueGeneric<T>::insert(T d)
 		//tail = -1;
 
 	cout << "Got here QueueGeneric Insert" << endl;
+	cout << "Size of the doubly linked list: " << LL->getSize();
 
 	LL->insertBack(d);
+	cout << "Inserted into doubly linked list" << endl;
 	numElements++;
 	cout << "Inserted" << endl;
 }

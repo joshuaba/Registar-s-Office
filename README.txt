@@ -1,6 +1,6 @@
-Joshua Barrs
+Joshua Barrs / Vincent Jodjana 
 002294736
-barrs@chapman.edu
+barrs@chapman.edu / jodjana@chapman.edu 
 CPSC 350-01
 Assignment 4: Registar's Office Simulation 
 

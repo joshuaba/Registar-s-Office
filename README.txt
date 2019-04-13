@@ -31,6 +31,8 @@ References Used to complete the assignment:
 
 	I consulted with Matthew Raymond from section 2 who helped me with a lot of the implementation for my project. 
 
+	I consulted with Dan Haub who helped me with the implementation of my Doubly Linked List for the queue. 
+
 	I consulted my dad who helped me with the implementation of the assignment as well. 
 
 Instructions for Running the Assignment: 

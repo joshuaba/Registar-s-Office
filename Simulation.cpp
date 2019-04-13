@@ -19,17 +19,17 @@ Simulation::Simulation() //default constructor
 
 Simulation::Simulation(string inputFileToBeProcessed)
 {
-    cout << "Getting here!" << endl;
     processFile(inputFileToBeProcessed);
 }
 
 void Simulation::processFile(string fileToProcess)
 {
-    cout << "Top of method" << endl;
+    cout << "processFile" << endl;
     ifstream inputStream;
     inputStream.open(fileToProcess);
-    cout << "Getting here" << endl;
+
     string valueRead;
+
     int currentTimeTick = 0; //what is the current time tick we are at
     int fileLineNum = 0; //the current line number of the file
     int nextTimeTickLine = 2; //I need this so I can decipher which lines correspond to time ticks and which lines correspond to students entering the line/time required at the window
@@ -37,49 +37,61 @@ void Simulation::processFile(string fileToProcess)
     {
         fileLineNum++; //I want to start off the line number of the file as 1
         getline(inputStream, valueRead);
-
-        int numberRead = stoi(valueRead); //convert the integer (read in as a string) to an int object
-        cout << "Number read: " << numberRead << endl;
-
-        cout << numberRead << endl;
-
-        if(fileLineNum == 1)
+        try
         {
-            windowArray = new Window[numberRead]; //populate my window array with the number of windows open read from the file
+            int numberRead = stoi(valueRead); //convert the integer (read in as a string) to an int object
+            if(numberRead < 0)
+                throw 0;
+
+            if(fileLineNum == 1)
+            {
+                windowArray = new Window[numberRead];
+            }
+
+            else if (fileLineNum == nextTimeTickLine)//the line number is not equal to 1, so all other integer values correspond to either a clock tick time, the number of students arriving in line, and the times each student requires at the window
+            {
+                currentTimeTick = numberRead;
+            }
+
+            else if(fileLineNum == nextTimeTickLine + 1)
+            {
+                                    //current line + this line + num of students + one more for next line
+                nextTimeTickLine = nextTimeTickLine + 1 + numberRead + 1;
+            }
+
+            else //the value is a student time required at window value
+            {
+                listOfStudents.push_back(Students(numberRead, currentTimeTick));
+                //addStudent(Students(numberRead, currentTimeTick)); //add a student to the studentsQueue queue, initializing the student object as requiring numberRead minutes at the window and entering the queue at
+            }
         }
 
-        else if (fileLineNum == nextTimeTickLine)//the line number is not equal to 1, so all other integer values correspond to either a clock tick time, the number of students arriving in line, and the times each student requires at the window
+        catch(invalid_argument e)
         {
-            currentTimeTick = numberRead;
+            //do nothing.
+        }
+        catch(int i)
+        {
+            cerr << "Value must be non-negative!" << endl;
+            exit(1);
         }
 
-        else if(fileLineNum == nextTimeTickLine + 1)
-        {
-            nextTimeTickLine = nextTimeTickLine + 1 + fileLineNum;
-        }
-
-        else //the value is a student time required at window value
-        {
-            cout << "Got here A!" << endl;
-            Students myStudent(numberRead, currentTimeTick);
-            addStudent(myStudent); //add a student to the studentsQueue queue, initializing the student object as requiring numberRead minutes at the window and entering the queue at
-            cout << "Got here B!" << endl;
-        }
     }
 
-    sizeOfStudentCompletedArray = studentsQueue->getSize();
-
     inputStream.close(); //close the input stream
+
+    addStudentsToStudentsQueue();
 }
 
-/*
-Simulation::Simulation(int numOfWindowsOpen)
+void Simulation::addStudentsToStudentsQueue()
 {
-    windowsOpen = numOfWindowsOpen;
-    timePassed = 0;
-    studentsQueue = new QueueGeneric<Students>(50);
+    for (int i = 0; i < listOfStudents.size(); ++i)
+    {
+        Students theStudent = listOfStudents[i];
+        addStudent(theStudent);
+        listOfStudents.pop_back();
+    }
 }
-*/
 
 Simulation::~Simulation()
 {
@@ -90,19 +102,19 @@ Simulation::~Simulation()
 
 void Simulation::addStudent(Students theStudent)
 {
-cout << "Getting here A!" << endl;
     studentsQueue->insert(theStudent);
-cout << "Getting here B!" << endl;
 }
 
 void Simulation::processStudents()
 {
+
     studentCompletedArray = new Students[studentsQueue->getSize()]; //initalize the completed student array to be an array of Students with the same size as the size of the student queue
     while(true)
     {
         for (int i = 0; i < sizeOfWindowArray; ++i)
         {
             Students *studentAtWindow = windowArray[i].getStudentAtWindow();
+
             if(studentAtWindow != NULL)
             {
                 if(studentAtWindow->getTimeFinishedAtWindow() <= currentTimeTick)
@@ -117,12 +129,12 @@ void Simulation::processStudents()
         {
             if(windowArray[i].getStudentAtWindow() == NULL)
             {
-                if(studentsQueue->getSize() != 0)
+                if(studentsQueue->getSize() > 0)
                 {
                     Students studentAtFront = studentsQueue->front();
                     Students *nextStudentInLine = &studentAtFront;
                     windowArray[i].setStudent(nextStudentInLine);
-                    studentsQueue->remove();
+                    studentsQueue->remove(); 
                 }
                 else //no more students are waiting in line
                 {
@@ -132,17 +144,24 @@ void Simulation::processStudents()
             }
         }
 
+        processAggregates();
+        printAggregates();
+        break;
+
+        /*
         if(isAllWorkComplete())
         {
             processAggregates();
             printAggregates();
             break;
         }
+        */
     }
 }
 
 bool Simulation::isAllWorkComplete()
 {
+
     if(studentsQueue->getSize() > 0)
         return false;
     for (int i = 0; i < sizeOfWindowArray; ++i)

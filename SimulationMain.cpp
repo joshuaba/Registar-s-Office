@@ -12,8 +12,11 @@ int main(int argc, char** argv)
     {
         string fileToProcess = argv[1];
         cout << fileToProcess << endl;
+        cout << "I get a segmentation fault here. I am not sure why and could not figure it out" << endl;
         Simulation mySimulation(fileToProcess);
-        //mySimulation.processStudents();
+        mySimulation.processStudents();
+
+
     }
     else
     {
